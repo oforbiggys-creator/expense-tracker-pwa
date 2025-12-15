@@ -1,70 +1,46 @@
-// ===============================
-// Expense Tracker Logic
-// ===============================
+document.addEventListener("DOMContentLoaded", () => {
+  const titleInput = document.getElementById("title");
+  const amountInput = document.getElementById("amount");
+  const addBtn = document.getElementById("addBtn");
+  const expenseList = document.getElementById("expenseList");
+  const totalAmount = document.getElementById("totalAmount");
 
-// Get elements
-const form = document.getElementById("expense-form");
-const titleInput = document.getElementById("title");
-const amountInput = document.getElementById("amount");
-const expenseList = document.getElementById("expense-list");
+  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
-// Load expenses from localStorage
-let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+  function renderExpenses() {
+    expenseList.innerHTML = "";
+    let total = 0;
 
-// Render expenses
-function renderExpenses() {
-  expenseList.innerHTML = "";
+    expenses.forEach((expense, index) => {
+      total += expense.amount;
 
-  expenses.forEach((expense, index) => {
-    const li = document.createElement("li");
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <span>${expense.title}</span>
+        <span>₦${expense.amount}</span>
+      `;
+      expenseList.appendChild(li);
+    });
 
-    li.innerHTML = `
-      <span>${expense.title} - ₦${expense.amount}</span>
-      <button onclick="deleteExpense(${index})">Delete</button>
-    `;
+    totalAmount.textContent = total;
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+  }
 
-    expenseList.appendChild(li);
+  addBtn.addEventListener("click", () => {
+    const title = titleInput.value.trim();
+    const amount = parseFloat(amountInput.value);
+
+    if (!title || isNaN(amount) || amount <= 0) {
+      alert("Please enter a valid expense");
+      return;
+    }
+
+    expenses.push({ title, amount });
+    titleInput.value = "";
+    amountInput.value = "";
+
+    renderExpenses();
   });
-
-  // Save to localStorage
-  localStorage.setItem("expenses", JSON.stringify(expenses));
-}
-
-// Add expense
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const title = titleInput.value.trim();
-  const amount = amountInput.value;
-
-  if (!title || !amount) return;
-
-  expenses.push({ title, amount });
-
-  titleInput.value = "";
-  amountInput.value = "";
 
   renderExpenses();
 });
-
-// Delete expense
-function deleteExpense(index) {
-  expenses.splice(index, 1);
-  renderExpenses();
-}
-
-// Initial render
-renderExpenses();
-
-
-// ===============================
-// PWA: Service Worker Registration
-// ===============================
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("sw.js")
-      .then(() => console.log("Service Worker registered"))
-      .catch((err) => console.error("Service Worker error:", err));
-  });
-}
