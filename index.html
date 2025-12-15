@@ -2,104 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Tracker</title>
 
-  <title>Expense Tracker PWA</title>
+  <!-- MOBILE FIX -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
 
-  <!-- Icons -->
-  <link rel="icon" href="icon-192.png" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
-
-  <!-- Simple styling -->
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-    }
-    .container {
-      max-width: 500px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 16px;
-    }
-    button {
-      background: black;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
-      padding: 8px;
-      background: #eee;
-      border-radius: 4px;
-    }
-    .total {
-      font-size: 20px;
-      font-weight: bold;
-      margin-top: 20px;
-      text-align: center;
-    }
-    footer {
-      text-align: center;
-      margin-top: 20px;
-      color: gray;
-    }
-  </style>
+  <meta name="theme-color" content="#2ecc71">
 </head>
-
 <body>
-  <div class="container">
+
+  <div class="app">
     <h1>Expense Tracker</h1>
-    <p>Track your daily expenses</p>
+    <p class="subtitle">Track your daily expenses</p>
 
-    <input id="title" type="text" placeholder="Expense title" />
-    <input id="amount" type="number" placeholder="Amount" />
-    <button id="addBtn">Add Expense</button>
-
-    <ul id="expenseList"></ul>
-
-    <div class="total">
-      Total: ₦<span id="totalAmount">0</span>
+    <div class="form">
+      <input type="text" id="title" placeholder="Expense title">
+      <input type="number" id="amount" placeholder="Amount">
+      <button id="addBtn">Add Expense</button>
     </div>
+
+    <h2 id="total">Total: ₦0</h2>
+
+    <ul id="list"></ul>
+
+    <footer>
+      © 2025 Expense Tracker PWA
+    </footer>
   </div>
 
-  <footer>
-    © 2025 Expense Tracker PWA
-  </footer>
-
-  <!-- Service Worker -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js');
-      });
-    }
-  </script>
-
-  <!-- Main JS -->
-  <script src="script.js" defer></script>
+  <script src="script.js"></script>
 </body>
 </html>
