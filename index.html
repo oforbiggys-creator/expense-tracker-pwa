@@ -8,63 +8,98 @@
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#4CAF50" />
+  <meta name="theme-color" content="#000000" />
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="style.css" />
+  <!-- Icons -->
+  <link rel="icon" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+
+  <!-- Simple styling -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    button {
+      background: black;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      padding: 8px;
+      background: #eee;
+      border-radius: 4px;
+    }
+    .total {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+      text-align: center;
+    }
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      color: gray;
+    }
+  </style>
 </head>
 
 <body>
-
-  <header>
+  <div class="container">
     <h1>Expense Tracker</h1>
     <p>Track your daily expenses</p>
-  </header>
 
-  <main>
-    <form id="expense-form">
-      <input
-        type="text"
-        id="title"
-        placeholder="Expense title"
-        required
-      />
+    <input id="title" type="text" placeholder="Expense title" />
+    <input id="amount" type="number" placeholder="Amount" />
+    <button id="addBtn">Add Expense</button>
 
-      <input
-        type="number"
-        id="amount"
-        placeholder="Amount"
-        required
-      />
+    <ul id="expenseList"></ul>
 
-      <button type="submit">Add Expense</button>
-    </form>
-
-    <section class="summary">
-      <h2>Total: ₦<span id="total">0</span></h2>
-    </section>
-
-    <ul id="expense-list"></ul>
-  </main>
+    <div class="total">
+      Total: ₦<span id="totalAmount">0</span>
+    </div>
+  </div>
 
   <footer>
-    <p>© 2025 Expense Tracker PWA</p>
+    © 2025 Expense Tracker PWA
   </footer>
 
-  <!-- JavaScript -->
-  <script src="script.js"></script>
-
-  <!-- Service Worker Registration -->
+  <!-- Service Worker -->
   <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("sw.js")
-          .then(() => console.log("Service Worker registered"))
-          .catch(err => console.error("Service Worker failed:", err));
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js');
       });
     }
   </script>
 
+  <!-- Main JS -->
+  <script src="script.js" defer></script>
 </body>
 </html>
