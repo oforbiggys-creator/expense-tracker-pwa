@@ -2,30 +2,31 @@
 // Expense Tracker Logic
 // ===============================
 
-// Select elements
+// Get elements
 const form = document.getElementById("expense-form");
 const titleInput = document.getElementById("title");
 const amountInput = document.getElementById("amount");
-const list = document.getElementById("expense-list");
+const expenseList = document.getElementById("expense-list");
 
 // Load expenses from localStorage
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
 // Render expenses
 function renderExpenses() {
-  list.innerHTML = "";
+  expenseList.innerHTML = "";
 
   expenses.forEach((expense, index) => {
     const li = document.createElement("li");
 
     li.innerHTML = `
-      ${expense.title} - ₦${expense.amount}
+      <span>${expense.title} - ₦${expense.amount}</span>
       <button onclick="deleteExpense(${index})">Delete</button>
     `;
 
-    list.appendChild(li);
+    expenseList.appendChild(li);
   });
 
+  // Save to localStorage
   localStorage.setItem("expenses", JSON.stringify(expenses));
 }
 
@@ -57,18 +58,13 @@ renderExpenses();
 
 
 // ===============================
-// Service Worker Registration
+// PWA: Service Worker Registration
 // ===============================
-
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
       .register("sw.js")
-      .then((reg) => {
-        console.log("Service Worker registered:", reg.scope);
-      })
-      .catch((err) => {
-        console.log("Service Worker registration failed:", err);
-      });
+      .then(() => console.log("Service Worker registered"))
+      .catch((err) => console.error("Service Worker error:", err));
   });
 }
