@@ -1,78 +1,88 @@
-// FORCE NEW VERSION (important for PWA cache)
-const APP_VERSION = "1.0.3";
+let expenses = [];
+let chart;
 
-// Elements
-const titleInput = document.getElementById("title");
-const amountInput = document.getElementById("amount");
-const addBtn = document.getElementById("addBtn");
-const list = document.getElementById("list");
-const totalDisplay = document.querySelector(".total");
+// Add Expense
+function addExpense() {
+  const title = document.getElementById("title").value.trim();
+  const amount = parseFloat(document.getElementById("amount").value);
 
-// Load expenses
-let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+  if (!title || isNaN(amount)) return;
 
-// Render function
-function renderExpenses() {
+  expenses.push({ title, amount });
+
+  document.getElementById("title").value = "";
+  document.getElementById("amount").value = "";
+
+  updateUI();
+}
+
+// Delete Expense
+function deleteExpense(index) {
+  expenses.splice(index, 1);
+  updateUI();
+}
+
+// Update UI
+function updateUI() {
+  const list = document.getElementById("expense-list");
+  const totalEl = document.getElementById("total");
+
   list.innerHTML = "";
   let total = 0;
 
   expenses.forEach((expense, index) => {
+    total += expense.amount;
+
     const li = document.createElement("li");
     li.innerHTML = `
-      <span>${expense.title} - ₦${expense.amount}</span>
-      <button class="delete-btn" data-index="${index}">Delete</button>
+      ${expense.title} - ₦${expense.amount}
+      <button onclick="deleteExpense(${index})">Delete</button>
     `;
     list.appendChild(li);
-    total += expense.amount;
   });
 
-  totalDisplay.textContent = `Total: ₦${total}`;
+  totalEl.textContent = total;
+  updateChart();
 }
 
-// Add expense
-function addExpense() {
-  const title = titleInput.value.trim();
-  const amount = Number(amountInput.value);
+// Pie Chart
+function updateChart() {
+  const ctx = document.getElementById("expenseChart");
 
-  if (!title || amount <= 0) {
-    alert("Enter valid expense");
-    return;
-  }
+  const labels = expenses.map(e => e.title);
+  const data = expenses.map(e => e.amount);
 
-  expenses.push({ title, amount });
-  localStorage.setItem("expenses", JSON.stringify(expenses));
+  if (chart) chart.destroy();
 
-  titleInput.value = "";
-  amountInput.value = "";
-
-  renderExpenses();
+  chart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: [
+          "#4CAF50",
+          "#FF9800",
+          "#F44336",
+          "#2196F3",
+          "#9C27B0"
+        ]
+      }]
+    }
+  });
 }
 
-// Delete expense
-list.addEventListener("click", (e) => {
-  if (e.target.classList.contains("delete-btn")) {
-    const index = e.target.dataset.index;
-    expenses.splice(index, 1);
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-    renderExpenses();
-  }
+/* 🌙 Dark Mode */
+const toggleBtn = document.getElementById("themeToggle");
+
+toggleBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  localStorage.setItem(
+    "theme",
+    document.body.classList.contains("dark") ? "dark" : "light"
+  );
 });
 
-// Button event (CRITICAL FIX)
-addBtn.addEventListener("click", addExpense);
-
-// Initial render
-renderExpenses();
-
-// Service Worker (force update)
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistrations().then(regs => {
-    regs.forEach(reg => reg.unregister());
-  });
-
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(() => console.log("SW registered"))
-      .catch(err => console.error("SW error:", err));
-  });
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
 }
