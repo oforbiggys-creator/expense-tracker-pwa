@@ -1,74 +1,86 @@
-// ====== ELEMENTS ======
 const titleInput = document.getElementById("title");
 const amountInput = document.getElementById("amount");
 const addBtn = document.getElementById("addBtn");
-const list = document.getElementById("list");
+const list = document.getElementById("expenseList");
 const totalEl = document.getElementById("total");
+const themeToggle = document.getElementById("themeToggle");
 
-// ====== DATA ======
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
-// ====== FUNCTIONS ======
-function saveExpenses() {
+/* ===== DARK MODE ===== */
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+}
+
+themeToggle.onclick = () => {
+  document.body.classList.toggle("dark");
+  localStorage.setItem(
+    "theme",
+    document.body.classList.contains("dark") ? "dark" : "light"
+  );
+};
+
+/* ===== PIE CHART ===== */
+const ctx = document.getElementById("expenseChart").getContext("2d");
+let chart = new Chart(ctx, {
+  type: "pie",
+  data: {
+    labels: [],
+    datasets: [{
+      data: [],
+      backgroundColor: [
+        "#4CAF50",
+        "#2196F3",
+        '#FF9800',
+        '#9C27B0',
+        '#E91E63'
+      ]
+    }]
+  }
+});
+
+/* ===== FUNCTIONS ===== */
+function render() {
+  list.innerHTML = "";
+  let total = 0;
+
+  chart.data.labels = [];
+  chart.data.datasets[0].data = [];
+
+  expenses.forEach((exp, index) => {
+    total += exp.amount;
+
+    const li = document.createElement("li");
+    li.innerHTML = `
+      ${exp.title} - ₦${exp.amount}
+      <button onclick="removeExpense(${index})">Delete</button>
+    `;
+    list.appendChild(li);
+
+    chart.data.labels.push(exp.title);
+    chart.data.datasets[0].data.push(exp.amount);
+  });
+
+  chart.update();
+  totalEl.textContent = `₦${total}`;
   localStorage.setItem("expenses", JSON.stringify(expenses));
 }
 
-function updateTotal() {
-  const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-  totalEl.textContent = `Total: ₦${total}`;
+function removeExpense(index) {
+  expenses.splice(index, 1);
+  render();
 }
 
-function renderExpenses() {
-  list.innerHTML = "";
-
-  expenses.forEach((expense, index) => {
-    const li = document.createElement("li");
-
-    li.innerHTML = `
-      <span>${expense.title} - ₦${expense.amount}</span>
-      <button class="delete-btn">Delete</button>
-    `;
-
-    li.querySelector(".delete-btn").addEventListener("click", () => {
-      expenses.splice(index, 1);
-      saveExpenses();
-      renderExpenses();
-      updateTotal();
-    });
-
-    list.appendChild(li);
-  });
-}
-
-function addExpense() {
+addBtn.onclick = () => {
   const title = titleInput.value.trim();
   const amount = Number(amountInput.value);
 
-  if (!title || amount <= 0) {
-    alert("Please enter a valid expense");
-    return;
-  }
+  if (!title || amount <= 0) return;
 
   expenses.push({ title, amount });
-
   titleInput.value = "";
   amountInput.value = "";
+  render();
+};
 
-  saveExpenses();
-  renderExpenses();
-  updateTotal();
-}
-
-// ====== EVENTS ======
-addBtn.addEventListener("click", addExpense);
-
-// ====== INIT ======
-renderExpenses();
-updateTotal();
-
-// ====== SERVICE WORKER ======
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js");
-  });
-}
+render();
