@@ -9,37 +9,48 @@
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4CAF50">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
 
   <!-- Icons -->
-  <link rel="icon" href="icons/icon-192.png">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" href="icon-192.png">
 
   <!-- CSS -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
+  <div class="app">
 
-  <main class="container">
-    <h1>Expense Tracker</h1>
-    <p class="subtitle">Track your daily expenses</p>
+    <header>
+      <h1>Expense Tracker</h1>
+      <p>Track your daily expenses</p>
+      <button id="themeToggle">🌙</button>
+    </header>
 
-    <input type="text" id="title" placeholder="Expense title">
-    <input type="number" id="amount" placeholder="Amount">
+    <section class="card">
+      <input id="title" type="text" placeholder="Expense title">
+      <input id="amount" type="number" placeholder="Amount (₦)">
+      <button id="addBtn">Add Expense</button>
+    </section>
 
-    <button id="addBtn">Add Expense</button>
+    <section class="card total">
+      Total: <span id="total">₦0</span>
+    </section>
 
-    <h2 id="total">Total: ₦0</h2>
+    <section class="card">
+      <canvas id="expenseChart"></canvas>
+    </section>
 
-    <ul id="list"></ul>
+    <ul id="expenseList"></ul>
 
     <footer>
       © 2025 Biggy Expense Tracker PWA
     </footer>
-  </main>
 
-  <!-- JavaScript -->
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
