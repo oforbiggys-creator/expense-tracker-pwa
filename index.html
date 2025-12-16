@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Expense Tracker PWA</title>
+  <title>Expense Tracker</title>
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
@@ -16,55 +16,38 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="style.css">
-</head>
 
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
 <body>
 
-  <main class="container">
+  <div class="container">
+    <button id="themeToggle" class="theme-btn">🌙 Dark Mode</button>
+
     <h1>Expense Tracker</h1>
     <p class="subtitle">Track your daily expenses</p>
 
-    <div class="form">
-      <input 
-        type="text" 
-        id="title" 
-        placeholder="Expense title"
-        autocomplete="off"
-      >
+    <input type="text" id="title" placeholder="Expense title">
+    <input type="number" id="amount" placeholder="Amount">
 
-      <input 
-        type="number" 
-        id="amount" 
-        placeholder="Amount"
-        inputmode="numeric"
-      >
+    <button class="add-btn" onclick="addExpense()">Add Expense</button>
 
-      <button id="addBtn">Add Expense</button>
-    </div>
+    <h2>Total: ₦<span id="total">0</span></h2>
 
-    <h2 class="total">Total: ₦0</h2>
+    <ul id="expense-list"></ul>
 
-    <ul id="list"></ul>
-  </main>
+    <section class="chart-section">
+      <h3>Expense Breakdown</h3>
+      <canvas id="expenseChart"></canvas>
+    </section>
 
-  <footer>
-    © 2025 Expense Tracker PWA
-  </footer>
+    <footer>
+      © 2025 Expense Tracker PWA
+    </footer>
+  </div>
 
   <!-- JavaScript -->
-  <script src="script.js" defer></script>
-
-  <!-- Service Worker -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("service-worker.js")
-          .then(() => console.log("Service Worker Registered"))
-          .catch(err => console.error("SW Error:", err));
-      });
-    }
-  </script>
-
+  <script src="script.js"></script>
 </body>
 </html>
