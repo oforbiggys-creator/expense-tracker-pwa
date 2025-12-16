@@ -1,91 +1,110 @@
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
   font-family: Arial, sans-serif;
 }
 
 body {
-  background: #f4f4f4;
-  padding: 20px;
+  margin: 0;
+  background: #f2f2f2;
+  color: #000;
 }
 
 .container {
-  max-width: 500px;
+  max-width: 420px;
   margin: auto;
-  background: #fff;
   padding: 20px;
-  border-radius: 8px;
+  background: #fff;
+  min-height: 100vh;
 }
 
 h1 {
   text-align: center;
-  margin-bottom: 10px;
 }
 
-p {
+.subtitle {
   text-align: center;
-  margin-bottom: 20px;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  color: #555;
 }
 
 input {
   width: 100%;
   padding: 12px;
+  margin: 8px 0;
   font-size: 16px;
 }
 
-button {
+.add-btn {
   width: 100%;
-  padding: 12px;
-  font-size: 16px;
+  padding: 14px;
   background: #4CAF50;
   color: white;
   border: none;
-  border-radius: 4px;
+  font-size: 18px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-button:hover {
-  opacity: 0.9;
+h2 {
+  margin-top: 15px;
 }
 
 ul {
   list-style: none;
-  margin-top: 20px;
+  padding: 0;
 }
 
 li {
+  background: #f7f7f7;
+  margin: 8px 0;
+  padding: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #eee;
-  padding: 10px;
-  margin-bottom: 8px;
-  border-radius: 4px;
 }
 
-.delete-btn {
+li button {
   background: red;
   color: white;
-  padding: 6px 10px;
   border: none;
-  border-radius: 4px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.total {
-  margin-top: 20px;
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
+.chart-section {
+  margin-top: 25px;
 }
 
 footer {
-  margin-top: 30px;
   text-align: center;
+  margin-top: 30px;
   font-size: 14px;
+  color: #777;
+}
+
+/* 🌙 Dark Mode */
+body.dark {
+  background: #121212;
+  color: #fff;
+}
+
+body.dark .container {
+  background: #1e1e1e;
+}
+
+body.dark input {
+  background: #2a2a2a;
+  color: white;
+  border: 1px solid #444;
+}
+
+body.dark li {
+  background: #2a2a2a;
+}
+
+.theme-btn {
+  margin-bottom: 15px;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 5px;
 }
