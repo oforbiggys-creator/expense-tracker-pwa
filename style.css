@@ -1,3 +1,17 @@
+:root {
+  --bg: #f4f4f4;
+  --card: #ffffff;
+  --text: #000000;
+  --primary: #4CAF50;
+  --danger: #e53935;
+}
+
+body.dark {
+  --bg: #121212;
+  --card: #1e1e1e;
+  --text: #ffffff;
+}
+
 * {
   box-sizing: border-box;
   font-family: Arial, sans-serif;
@@ -5,47 +19,61 @@
 
 body {
   margin: 0;
-  background: #f2f2f2;
-  color: #000;
+  background: var(--bg);
+  color: var(--text);
 }
 
-.container {
-  max-width: 420px;
+.app {
+  max-width: 480px;
   margin: auto;
-  padding: 20px;
-  background: #fff;
-  min-height: 100vh;
+  padding: 16px;
 }
 
-h1 {
+header {
   text-align: center;
+  position: relative;
 }
 
-.subtitle {
-  text-align: center;
-  color: #555;
+#themeToggle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border: none;
+  background: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.card {
+  background: var(--card);
+  padding: 15px;
+  border-radius: 10px;
+  margin: 15px 0;
 }
 
 input {
   width: 100%;
   padding: 12px;
-  margin: 8px 0;
-  font-size: 16px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
-.add-btn {
+button {
   width: 100%;
-  padding: 14px;
-  background: #4CAF50;
-  color: white;
+  padding: 12px;
   border: none;
-  font-size: 18px;
   border-radius: 6px;
+  background: var(--primary);
+  color: white;
+  font-size: 16px;
   cursor: pointer;
 }
 
-h2 {
-  margin-top: 15px;
+.total {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
 }
 
 ul {
@@ -54,57 +82,23 @@ ul {
 }
 
 li {
-  background: #f7f7f7;
-  margin: 8px 0;
+  background: var(--card);
+  margin: 10px 0;
   padding: 10px;
+  border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 li button {
-  background: red;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.chart-section {
-  margin-top: 25px;
+  background: var(--danger);
+  width: auto;
+  padding: 6px 12px;
 }
 
 footer {
   text-align: center;
-  margin-top: 30px;
-  font-size: 14px;
-  color: #777;
-}
-
-/* 🌙 Dark Mode */
-body.dark {
-  background: #121212;
-  color: #fff;
-}
-
-body.dark .container {
-  background: #1e1e1e;
-}
-
-body.dark input {
-  background: #2a2a2a;
-  color: white;
-  border: 1px solid #444;
-}
-
-body.dark li {
-  background: #2a2a2a;
-}
-
-.theme-btn {
-  margin-bottom: 15px;
-  padding: 8px 12px;
-  cursor: pointer;
-  border-radius: 5px;
+  margin-top: 20px;
+  opacity: 0.7;
 }
