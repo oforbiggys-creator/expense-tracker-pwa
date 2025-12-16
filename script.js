@@ -1,88 +1,74 @@
-let expenses = [];
-let chart;
+// ====== ELEMENTS ======
+const titleInput = document.getElementById("title");
+const amountInput = document.getElementById("amount");
+const addBtn = document.getElementById("addBtn");
+const list = document.getElementById("list");
+const totalEl = document.getElementById("total");
 
-// Add Expense
+// ====== DATA ======
+let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+// ====== FUNCTIONS ======
+function saveExpenses() {
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+}
+
+function updateTotal() {
+  const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+  totalEl.textContent = `Total: ₦${total}`;
+}
+
+function renderExpenses() {
+  list.innerHTML = "";
+
+  expenses.forEach((expense, index) => {
+    const li = document.createElement("li");
+
+    li.innerHTML = `
+      <span>${expense.title} - ₦${expense.amount}</span>
+      <button class="delete-btn">Delete</button>
+    `;
+
+    li.querySelector(".delete-btn").addEventListener("click", () => {
+      expenses.splice(index, 1);
+      saveExpenses();
+      renderExpenses();
+      updateTotal();
+    });
+
+    list.appendChild(li);
+  });
+}
+
 function addExpense() {
-  const title = document.getElementById("title").value.trim();
-  const amount = parseFloat(document.getElementById("amount").value);
+  const title = titleInput.value.trim();
+  const amount = Number(amountInput.value);
 
-  if (!title || isNaN(amount)) return;
+  if (!title || amount <= 0) {
+    alert("Please enter a valid expense");
+    return;
+  }
 
   expenses.push({ title, amount });
 
-  document.getElementById("title").value = "";
-  document.getElementById("amount").value = "";
+  titleInput.value = "";
+  amountInput.value = "";
 
-  updateUI();
+  saveExpenses();
+  renderExpenses();
+  updateTotal();
 }
 
-// Delete Expense
-function deleteExpense(index) {
-  expenses.splice(index, 1);
-  updateUI();
-}
+// ====== EVENTS ======
+addBtn.addEventListener("click", addExpense);
 
-// Update UI
-function updateUI() {
-  const list = document.getElementById("expense-list");
-  const totalEl = document.getElementById("total");
+// ====== INIT ======
+renderExpenses();
+updateTotal();
 
-  list.innerHTML = "";
-  let total = 0;
-
-  expenses.forEach((expense, index) => {
-    total += expense.amount;
-
-    const li = document.createElement("li");
-    li.innerHTML = `
-      ${expense.title} - ₦${expense.amount}
-      <button onclick="deleteExpense(${index})">Delete</button>
-    `;
-    list.appendChild(li);
+// ====== SERVICE WORKER ======
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js");
   });
-
-  totalEl.textContent = total;
-  updateChart();
-}
-
-// Pie Chart
-function updateChart() {
-  const ctx = document.getElementById("expenseChart");
-
-  const labels = expenses.map(e => e.title);
-  const data = expenses.map(e => e.amount);
-
-  if (chart) chart.destroy();
-
-  chart = new Chart(ctx, {
-    type: "pie",
-    data: {
-      labels,
-      datasets: [{
-        data,
-        backgroundColor: [
-          "#4CAF50",
-          "#FF9800",
-          "#F44336",
-          "#2196F3",
-          "#9C27B0"
-        ]
-      }]
-    }
-  });
-}
-
-/* 🌙 Dark Mode */
-const toggleBtn = document.getElementById("themeToggle");
-
-toggleBtn.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-  localStorage.setItem(
-    "theme",
-    document.body.classList.contains("dark") ? "dark" : "light"
-  );
-});
-
-if (localStorage.getItem("theme") === "dark") {
-  document.body.classList.add("dark");
 }
