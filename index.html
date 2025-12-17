@@ -1,172 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Biggy Expense</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biggy Expense</title>
 
-  <!-- Manifest -->
-  <link rel="manifest" href="manifest.json">
+<link rel="manifest" href="manifest.json">
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="style.css">
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  padding: 20px;
+}
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
+body.dark {
+  background: #121212;
+  color: white;
+}
 
-    body.dark {
-      background: #121212;
-      color: #fff;
-    }
+.container {
+  max-width: 420px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+}
 
-    .container {
-      max-width: 420px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-    }
+body.dark .container {
+  background: #1e1e1e;
+}
 
-    body.dark .container {
-      background: #1e1e1e;
-    }
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+}
 
-    h1 {
-      text-align: center;
-    }
+button {
+  background: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
 
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 6px 0;
-    }
+.lock {
+  color: red;
+  text-align: center;
+  font-weight: bold;
+}
 
-    button {
-      background: #1976d2;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+.hidden {
+  display: none;
+}
 
-    button:hover {
-      opacity: 0.9;
-    }
+/* Upgrade Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    ul {
-      list-style: none;
-      padding: 0;
-    }
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 300px;
+  text-align: center;
+}
 
-    li {
-      display: flex;
-      justify-content: space-between;
-      margin: 5px 0;
-    }
-
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 24px;
-    }
-
-    .switch input {
-      display: none;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      background: #ccc;
-      border-radius: 24px;
-      inset: 0;
-      transition: .4s;
-    }
-
-    .slider:before {
-      content: "";
-      position: absolute;
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background: white;
-      border-radius: 50%;
-      transition: .4s;
-    }
-
-    input:checked + .slider {
-      background: #4caf50;
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(26px);
-    }
-
-    .lock-msg {
-      color: #e53935;
-      font-weight: bold;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
+body.dark .modal-content {
+  background: #1e1e1e;
+}
+</style>
 </head>
+
 <body>
 
 <div class="container">
   <h1>💰 Biggy Expense</h1>
 
-  <!-- Expense Input -->
-  <input id="expenseName" type="text" placeholder="Expense name">
+  <input id="expenseName" placeholder="Expense name">
   <input id="expenseAmount" type="number" placeholder="Amount">
-  <button id="addExpenseBtn">Add Expense</button>
+  <button id="addExpense">Add Expense</button>
 
-  <!-- List -->
   <ul id="expenseList"></ul>
-
-  <h3>Total: ₦<span id="totalAmount">0</span></h3>
+  <h3>Total: ₦<span id="total">0</span></h3>
 
   <hr>
 
   <!-- Dark Mode -->
-  <label>🌙 Dark Mode
-    <label class="switch">
-      <input type="checkbox" id="darkToggle">
-      <span class="slider"></span>
-    </label>
+  <label>
+    🌙 Dark Mode
+    <input type="checkbox" id="darkToggle">
   </label>
 
   <hr>
 
   <!-- Business Mode -->
-  <p id="lockMessage" class="lock-msg hidden">
-    🔒 Business Mode is locked<br>
-    <small>Upgrade to unlock advanced features</small>
+  <p id="lockText" class="lock hidden">
+    🔒 Business Mode Locked
   </p>
 
-  <label>🏢 Business Mode
-    <label class="switch">
-      <input type="checkbox" id="businessToggle">
-      <span class="slider"></span>
-    </label>
-  </label>
+  <button id="openUpgrade">Upgrade to PRO</button>
 
   <div id="businessSection" class="hidden">
-    <p>📊 Business analytics coming soon…</p>
+    <h3>📊 Business Analytics</h3>
+    <p>Advanced reports & charts coming soon</p>
   </div>
 </div>
 
-<!-- JavaScript -->
+<!-- Upgrade Modal -->
+<div id="upgradeModal" class="modal hidden">
+  <div class="modal-content">
+    <h3>🚀 Biggy PRO</h3>
+    <p>✔ Unlimited expenses</p>
+    <p>✔ Business analytics</p>
+    <p>✔ Cloud sync (soon)</p>
+
+    <h2>₦2,000 / lifetime</h2>
+
+    <button id="upgradeBtn">Unlock Now</button>
+    <button id="closeModal">Cancel</button>
+  </div>
+</div>
+
 <script src="script.js"></script>
 </body>
 </html>
