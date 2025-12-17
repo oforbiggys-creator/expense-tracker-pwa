@@ -1,135 +1,98 @@
-const titleInput = document.getElementById("title");
-const amountInput = document.getElementById("amount");
-const addBtn = document.getElementById("addBtn");
-const list = document.getElementById("expenseList");
-const totalEl = document.getElementById("total");
-const themeToggle = document.getElementById("themeToggle");
+// Elements
+const expenseName = document.getElementById("expenseName");
+const expenseAmount = document.getElementById("expenseAmount");
+const addExpenseBtn = document.getElementById("addExpenseBtn");
+const expenseList = document.getElementById("expenseList");
+const totalAmountEl = document.getElementById("totalAmount");
 
+const darkToggle = document.getElementById("darkToggle");
+const businessToggle = document.getElementById("businessToggle");
+const businessSection = document.getElementById("businessSection");
+const lockMessage = document.getElementById("lockMessage");
+
+// State
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+let businessUnlocked = localStorage.getItem("businessUnlocked") === "true";
 
-/* ===== DARK MODE ===== */
-if (localStorage.getItem("theme") === "dark") {
-  document.body.classList.add("dark");
-}
-
-themeToggle.onclick = () => {
-  document.body.classList.toggle("dark");
-  localStorage.setItem(
-    "theme",
-    document.body.classList.contains("dark") ? "dark" : "light"
-  );
-};
-
-/* ===== PIE CHART ===== */
-const ctx = document.getElementById("expenseChart").getContext("2d");
-let chart = new Chart(ctx, {
-  type: "pie",
-  data: {
-    labels: [],
-    datasets: [{
-      data: [],
-      backgroundColor: [
-        "#4CAF50",
-        "#2196F3",
-        '#FF9800',
-        '#9C27B0',
-        '#E91E63'
-      ]
-    }]
-  }
-});
-
-/* ===== FUNCTIONS ===== */
-function render() {
-  list.innerHTML = "";
+// --------------------
+// Expense Functions
+// --------------------
+function renderExpenses() {
+  expenseList.innerHTML = "";
   let total = 0;
-
-  chart.data.labels = [];
-  chart.data.datasets[0].data = [];
 
   expenses.forEach((exp, index) => {
     total += exp.amount;
 
     const li = document.createElement("li");
     li.innerHTML = `
-      ${exp.title} - ₦${exp.amount}
-      <button onclick="removeExpense(${index})">Delete</button>
+      ${exp.name} - ₦${exp.amount}
+      <button onclick="deleteExpense(${index})">❌</button>
     `;
-    list.appendChild(li);
-
-    chart.data.labels.push(exp.title);
-    chart.data.datasets[0].data.push(exp.amount);
+    expenseList.appendChild(li);
   });
 
-  chart.update();
-  totalEl.textContent = `₦${total}`;
+  totalAmountEl.textContent = total;
   localStorage.setItem("expenses", JSON.stringify(expenses));
 }
 
-function removeExpense(index) {
+function deleteExpense(index) {
   expenses.splice(index, 1);
-  render();
+  renderExpenses();
 }
 
-addBtn.onclick = () => {
-  const title = titleInput.value.trim();
-  const amount = Number(amountInput.value);
+addExpenseBtn.addEventListener("click", () => {
+  if (!expenseName.value || !expenseAmount.value) return;
 
-  if (!title || amount <= 0) return;
+  expenses.push({
+    name: expenseName.value,
+    amount: Number(expenseAmount.value)
+  });
 
-  expenses.push({ title, amount });
-  titleInput.value = "";
-  amountInput.value = "";
-  render();
-};
+  expenseName.value = "";
+  expenseAmount.value = "";
+  renderExpenses();
+});
 
-render();
-const businessToggle = document.getElementById("businessToggle");
-const businessSection = document.getElementById("businessSection");
-const incomeTitle = document.getElementById("incomeTitle");
-const incomeAmount = document.getElementById("incomeAmount");
-const addIncomeBtn = document.getElementById("addIncomeBtn");
-const totalIncomeEl = document.getElementById("totalIncome");
-const profitEl = document.getElementById("profit");
+// --------------------
+// Dark Mode
+// --------------------
+darkToggle.checked = localStorage.getItem("dark") === "true";
+document.body.classList.toggle("dark", darkToggle.checked);
 
-let incomes = JSON.parse(localStorage.getItem("incomes")) || [];
-let businessMode = localStorage.getItem("businessMode") === "true";
+darkToggle.addEventListener("change", () => {
+  document.body.classList.toggle("dark");
+  localStorage.setItem("dark", darkToggle.checked);
+});
 
-/* Load mode */
-businessToggle.checked = businessMode;
-businessSection.classList.toggle("hidden", !businessMode);
+// --------------------
+// Business Mode Lock
+// --------------------
+function applyBusinessLock() {
+  if (!businessUnlocked) {
+    businessToggle.disabled = true;
+    lockMessage.classList.remove("hidden");
+    businessSection.classList.add("hidden");
+  } else {
+    businessToggle.disabled = false;
+    lockMessage.classList.add("hidden");
+  }
+}
 
-/* Toggle mode */
 businessToggle.addEventListener("change", () => {
-  businessMode = businessToggle.checked;
-  localStorage.setItem("businessMode", businessMode);
-  businessSection.classList.toggle("hidden", !businessMode);
-  calculateBusiness();
+  businessSection.classList.toggle("hidden", !businessToggle.checked);
 });
 
-/* Add income */
-addIncomeBtn.addEventListener("click", () => {
-  const title = incomeTitle.value.trim();
-  const amount = Number(incomeAmount.value);
-
-  if (!title || amount <= 0) return;
-
-  incomes.push({ title, amount });
-  localStorage.setItem("incomes", JSON.stringify(incomes));
-
-  incomeTitle.value = "";
-  incomeAmount.value = "";
-
-  calculateBusiness();
+// Secret unlock (DEV ONLY)
+document.addEventListener("keydown", (e) => {
+  if (e.ctrlKey && e.shiftKey && e.key === "U") {
+    businessUnlocked = true;
+    localStorage.setItem("businessUnlocked", "true");
+    alert("✅ Business Mode Unlocked");
+    applyBusinessLock();
+  }
 });
 
-/* Calculate profit/loss */
-function calculateBusiness() {
-  const totalIncome = incomes.reduce((sum, i) => sum + i.amount, 0);
-  const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
-
-  totalIncomeEl.textContent = `₦${totalIncome}`;
-  profitEl.textContent = `₦${totalIncome - totalExpenses}`;
-}
-
-calculateBusiness();
+// Init
+applyBusinessLock();
+renderExpenses();
