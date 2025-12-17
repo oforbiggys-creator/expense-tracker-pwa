@@ -1,130 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Biggy Expense</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biggy Expense</title>
 
-<link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #121212;
+      color: #fff;
+    }
 
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-  padding: 20px;
-}
+    header {
+      text-align: center;
+      padding: 15px;
+      font-size: 22px;
+      font-weight: bold;
+    }
 
-body.dark {
-  background: #121212;
-  color: white;
-}
+    .container {
+      padding: 16px;
+    }
 
-.container {
-  max-width: 420px;
-  margin: auto;
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-}
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+    }
 
-body.dark .container {
-  background: #1e1e1e;
-}
+    button {
+      background: #1976d2;
+      color: #fff;
+      cursor: pointer;
+    }
 
-input, button {
-  width: 100%;
-  padding: 10px;
-  margin: 6px 0;
-}
+    ul {
+      list-style: none;
+      padding: 0;
+    }
 
-button {
-  background: #1976d2;
-  color: white;
-  border: none;
-  border-radius: 6px;
-}
+    li {
+      background: #1e1e1e;
+      padding: 10px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      border-radius: 6px;
+    }
 
-.lock {
-  color: red;
-  text-align: center;
-  font-weight: bold;
-}
+    /* ===== MODAL ===== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
 
-.hidden {
-  display: none;
-}
+    .hidden {
+      display: none;
+    }
 
-/* Upgrade Modal */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    .modal-content {
+      background: #222;
+      padding: 20px;
+      border-radius: 12px;
+      width: 85%;
+      max-width: 350px;
+      text-align: center;
+    }
 
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  max-width: 300px;
-  text-align: center;
-}
+    .modal-content h2 {
+      margin-bottom: 10px;
+    }
 
-body.dark .modal-content {
-  background: #1e1e1e;
-}
-</style>
+    .modal-content p {
+      margin: 6px 0;
+    }
+
+    .cancel {
+      background: #444;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container">
-  <h1>💰 Biggy Expense</h1>
+<header>💰 Biggy Expense</header>
 
+<div class="container">
   <input id="expenseName" placeholder="Expense name">
   <input id="expenseAmount" type="number" placeholder="Amount">
   <button id="addExpense">Add Expense</button>
 
   <ul id="expenseList"></ul>
-  <h3>Total: ₦<span id="total">0</span></h3>
-
-  <hr>
-
-  <!-- Dark Mode -->
-  <label>
-    🌙 Dark Mode
-    <input type="checkbox" id="darkToggle">
-  </label>
-
-  <hr>
-
-  <!-- Business Mode -->
-  <p id="lockText" class="lock hidden">
-    🔒 Business Mode Locked
-  </p>
-
-  <button id="openUpgrade">Upgrade to PRO</button>
-
-  <div id="businessSection" class="hidden">
-    <h3>📊 Business Analytics</h3>
-    <p>Advanced reports & charts coming soon</p>
-  </div>
 </div>
 
-<!-- Upgrade Modal -->
+<!-- ===== PRO MODAL ===== -->
 <div id="upgradeModal" class="modal hidden">
-  <div class="modal-content">
-    <h3>🚀 Biggy PRO</h3>
+  <div class="modal-content" id="modalCard">
+    <h2>🚀 Biggy PRO</h2>
     <p>✔ Unlimited expenses</p>
     <p>✔ Business analytics</p>
     <p>✔ Cloud sync (soon)</p>
 
-    <h2>₦2,000 / lifetime</h2>
+    <h3>₦2,000 / lifetime</h3>
 
     <button id="upgradeBtn">Unlock Now</button>
-    <button id="closeModal">Cancel</button>
+    <button id="closeModal" class="cancel" type="button">Cancel</button>
   </div>
 </div>
 
