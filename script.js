@@ -1,98 +1,91 @@
 // Elements
 const expenseName = document.getElementById("expenseName");
 const expenseAmount = document.getElementById("expenseAmount");
-const addExpenseBtn = document.getElementById("addExpenseBtn");
+const addExpense = document.getElementById("addExpense");
 const expenseList = document.getElementById("expenseList");
-const totalAmountEl = document.getElementById("totalAmount");
+const totalEl = document.getElementById("total");
 
 const darkToggle = document.getElementById("darkToggle");
-const businessToggle = document.getElementById("businessToggle");
+
+const openUpgrade = document.getElementById("openUpgrade");
+const upgradeModal = document.getElementById("upgradeModal");
+const upgradeBtn = document.getElementById("upgradeBtn");
+const closeModal = document.getElementById("closeModal");
+
 const businessSection = document.getElementById("businessSection");
-const lockMessage = document.getElementById("lockMessage");
+const lockText = document.getElementById("lockText");
 
 // State
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-let businessUnlocked = localStorage.getItem("businessUnlocked") === "true";
+let isPro = localStorage.getItem("biggyPro") === "true";
 
-// --------------------
-// Expense Functions
-// --------------------
-function renderExpenses() {
+// ---------------- EXPENSES ----------------
+function render() {
   expenseList.innerHTML = "";
   let total = 0;
 
-  expenses.forEach((exp, index) => {
-    total += exp.amount;
-
+  expenses.forEach((e, i) => {
+    total += e.amount;
     const li = document.createElement("li");
-    li.innerHTML = `
-      ${exp.name} - ₦${exp.amount}
-      <button onclick="deleteExpense(${index})">❌</button>
-    `;
+    li.innerHTML = `${e.name} - ₦${e.amount} <button onclick="del(${i})">❌</button>`;
     expenseList.appendChild(li);
   });
 
-  totalAmountEl.textContent = total;
+  totalEl.textContent = total;
   localStorage.setItem("expenses", JSON.stringify(expenses));
 }
 
-function deleteExpense(index) {
-  expenses.splice(index, 1);
-  renderExpenses();
+function del(i) {
+  expenses.splice(i, 1);
+  render();
 }
 
-addExpenseBtn.addEventListener("click", () => {
+addExpense.onclick = () => {
   if (!expenseName.value || !expenseAmount.value) return;
-
-  expenses.push({
-    name: expenseName.value,
-    amount: Number(expenseAmount.value)
-  });
-
+  expenses.push({ name: expenseName.value, amount: +expenseAmount.value });
   expenseName.value = "";
   expenseAmount.value = "";
-  renderExpenses();
-});
+  render();
+};
 
-// --------------------
-// Dark Mode
-// --------------------
+// ---------------- DARK MODE ----------------
 darkToggle.checked = localStorage.getItem("dark") === "true";
 document.body.classList.toggle("dark", darkToggle.checked);
 
-darkToggle.addEventListener("change", () => {
+darkToggle.onchange = () => {
   document.body.classList.toggle("dark");
   localStorage.setItem("dark", darkToggle.checked);
-});
+};
 
-// --------------------
-// Business Mode Lock
-// --------------------
-function applyBusinessLock() {
-  if (!businessUnlocked) {
-    businessToggle.disabled = true;
-    lockMessage.classList.remove("hidden");
-    businessSection.classList.add("hidden");
+// ---------------- PRO SYSTEM ----------------
+function applyPro() {
+  if (isPro) {
+    businessSection.classList.remove("hidden");
+    lockText.classList.add("hidden");
+    openUpgrade.style.display = "none";
   } else {
-    businessToggle.disabled = false;
-    lockMessage.classList.add("hidden");
+    businessSection.classList.add("hidden");
+    lockText.classList.remove("hidden");
   }
 }
 
-businessToggle.addEventListener("change", () => {
-  businessSection.classList.toggle("hidden", !businessToggle.checked);
-});
+openUpgrade.onclick = () => {
+  upgradeModal.classList.remove("hidden");
+};
 
-// Secret unlock (DEV ONLY)
-document.addEventListener("keydown", (e) => {
-  if (e.ctrlKey && e.shiftKey && e.key === "U") {
-    businessUnlocked = true;
-    localStorage.setItem("businessUnlocked", "true");
-    alert("✅ Business Mode Unlocked");
-    applyBusinessLock();
-  }
-});
+closeModal.onclick = () => {
+  upgradeModal.classList.add("hidden");
+};
+
+upgradeBtn.onclick = () => {
+  // DEMO UNLOCK (replace with Paystack later)
+  isPro = true;
+  localStorage.setItem("biggyPro", "true");
+  upgradeModal.classList.add("hidden");
+  applyPro();
+  alert("🎉 Biggy PRO Unlocked!");
+};
 
 // Init
-applyBusinessLock();
-renderExpenses();
+applyPro();
+render();
