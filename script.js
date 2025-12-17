@@ -84,3 +84,52 @@ addBtn.onclick = () => {
 };
 
 render();
+const businessToggle = document.getElementById("businessToggle");
+const businessSection = document.getElementById("businessSection");
+const incomeTitle = document.getElementById("incomeTitle");
+const incomeAmount = document.getElementById("incomeAmount");
+const addIncomeBtn = document.getElementById("addIncomeBtn");
+const totalIncomeEl = document.getElementById("totalIncome");
+const profitEl = document.getElementById("profit");
+
+let incomes = JSON.parse(localStorage.getItem("incomes")) || [];
+let businessMode = localStorage.getItem("businessMode") === "true";
+
+/* Load mode */
+businessToggle.checked = businessMode;
+businessSection.classList.toggle("hidden", !businessMode);
+
+/* Toggle mode */
+businessToggle.addEventListener("change", () => {
+  businessMode = businessToggle.checked;
+  localStorage.setItem("businessMode", businessMode);
+  businessSection.classList.toggle("hidden", !businessMode);
+  calculateBusiness();
+});
+
+/* Add income */
+addIncomeBtn.addEventListener("click", () => {
+  const title = incomeTitle.value.trim();
+  const amount = Number(incomeAmount.value);
+
+  if (!title || amount <= 0) return;
+
+  incomes.push({ title, amount });
+  localStorage.setItem("incomes", JSON.stringify(incomes));
+
+  incomeTitle.value = "";
+  incomeAmount.value = "";
+
+  calculateBusiness();
+});
+
+/* Calculate profit/loss */
+function calculateBusiness() {
+  const totalIncome = incomes.reduce((sum, i) => sum + i.amount, 0);
+  const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+
+  totalIncomeEl.textContent = `₦${totalIncome}`;
+  profitEl.textContent = `₦${totalIncome - totalExpenses}`;
+}
+
+calculateBusiness();
