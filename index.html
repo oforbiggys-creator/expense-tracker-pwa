@@ -3,73 +3,170 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biggy Expense</title>
 
-  <title>Biggy Expense Tracker</title>
-
-  <!-- PWA -->
+  <!-- Manifest -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0f172a">
-
-  <!-- Icons -->
-  <link rel="icon" href="icon-192.png">
 
   <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    body.dark {
+      background: #121212;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    body.dark .container {
+      background: #1e1e1e;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0;
+    }
+
+    button {
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .switch input {
+      display: none;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      background: #ccc;
+      border-radius: 24px;
+      inset: 0;
+      transition: .4s;
+    }
+
+    .slider:before {
+      content: "";
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: .4s;
+    }
+
+    input:checked + .slider {
+      background: #4caf50;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    .lock-msg {
+      color: #e53935;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
-
 <body>
-<section class="card">
-  <label class="switch">
-    <input type="checkbox" id="businessToggle">
-    <span class="slider"></span>
+
+<div class="container">
+  <h1>💰 Biggy Expense</h1>
+
+  <!-- Expense Input -->
+  <input id="expenseName" type="text" placeholder="Expense name">
+  <input id="expenseAmount" type="number" placeholder="Amount">
+  <button id="addExpenseBtn">Add Expense</button>
+
+  <!-- List -->
+  <ul id="expenseList"></ul>
+
+  <h3>Total: ₦<span id="totalAmount">0</span></h3>
+
+  <hr>
+
+  <!-- Dark Mode -->
+  <label>🌙 Dark Mode
+    <label class="switch">
+      <input type="checkbox" id="darkToggle">
+      <span class="slider"></span>
+    </label>
   </label>
-  <span class="mode-text">Business Mode</span>
-</section>
 
-<section id="businessSection" class="card hidden">
-  <h3>Business Income</h3>
-  <input id="incomeTitle" type="text" placeholder="Income source">
-  <input id="incomeAmount" type="number" placeholder="Amount (₦)">
-  <button id="addIncomeBtn">Add Income</button>
+  <hr>
 
-  <div class="business-summary">
-    <p>Total Income: <b id="totalIncome">₦0</b></p>
-    <p>Profit / Loss: <b id="profit">₦0</b></p>
+  <!-- Business Mode -->
+  <p id="lockMessage" class="lock-msg hidden">
+    🔒 Business Mode is locked<br>
+    <small>Upgrade to unlock advanced features</small>
+  </p>
+
+  <label>🏢 Business Mode
+    <label class="switch">
+      <input type="checkbox" id="businessToggle">
+      <span class="slider"></span>
+    </label>
+  </label>
+
+  <div id="businessSection" class="hidden">
+    <p>📊 Business analytics coming soon…</p>
   </div>
-</section>
-  <div class="app">
+</div>
 
-    <header>
-      <h1>Expense Tracker</h1>
-      <p>Track your daily expenses</p>
-      <button id="themeToggle">🌙</button>
-    </header>
-
-    <section class="card">
-      <input id="title" type="text" placeholder="Expense title">
-      <input id="amount" type="number" placeholder="Amount (₦)">
-      <button id="addBtn">Add Expense</button>
-    </section>
-
-    <section class="card total">
-      Total: <span id="total">₦0</span>
-    </section>
-
-    <section class="card">
-      <canvas id="expenseChart"></canvas>
-    </section>
-
-    <ul id="expenseList"></ul>
-
-    <footer>
-      © 2025 Biggy Expense Tracker PWA
-    </footer>
-
-  </div>
-
-  <script src="script.js"></script>
+<!-- JavaScript -->
+<script src="script.js"></script>
 </body>
 </html>
