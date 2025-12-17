@@ -1,91 +1,79 @@
-// Elements
 const expenseName = document.getElementById("expenseName");
 const expenseAmount = document.getElementById("expenseAmount");
-const addExpense = document.getElementById("addExpense");
+const addExpenseBtn = document.getElementById("addExpense");
 const expenseList = document.getElementById("expenseList");
-const totalEl = document.getElementById("total");
 
-const darkToggle = document.getElementById("darkToggle");
-
-const openUpgrade = document.getElementById("openUpgrade");
 const upgradeModal = document.getElementById("upgradeModal");
-const upgradeBtn = document.getElementById("upgradeBtn");
 const closeModal = document.getElementById("closeModal");
+const upgradeBtn = document.getElementById("upgradeBtn");
+const modalCard = document.getElementById("modalCard");
 
-const businessSection = document.getElementById("businessSection");
-const lockText = document.getElementById("lockText");
-
-// State
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-let isPro = localStorage.getItem("biggyPro") === "true";
+let isPro = localStorage.getItem("isPro") === "true";
 
-// ---------------- EXPENSES ----------------
-function render() {
+const FREE_LIMIT = 5;
+
+// Render expenses
+function renderExpenses() {
   expenseList.innerHTML = "";
-  let total = 0;
-
   expenses.forEach((e, i) => {
-    total += e.amount;
     const li = document.createElement("li");
-    li.innerHTML = `${e.name} - ₦${e.amount} <button onclick="del(${i})">❌</button>`;
+    li.innerHTML = `${e.name} - ₦${e.amount} <span style="color:red;cursor:pointer" onclick="removeExpense(${i})">✖</span>`;
     expenseList.appendChild(li);
   });
-
-  totalEl.textContent = total;
-  localStorage.setItem("expenses", JSON.stringify(expenses));
 }
 
-function del(i) {
-  expenses.splice(i, 1);
-  render();
-}
-
-addExpense.onclick = () => {
+// Add expense
+addExpenseBtn.onclick = () => {
   if (!expenseName.value || !expenseAmount.value) return;
-  expenses.push({ name: expenseName.value, amount: +expenseAmount.value });
+
+  if (!isPro && expenses.length >= FREE_LIMIT) {
+    upgradeModal.classList.remove("hidden");
+    return;
+  }
+
+  expenses.push({
+    name: expenseName.value,
+    amount: expenseAmount.value
+  });
+
+  localStorage.setItem("expenses", JSON.stringify(expenses));
   expenseName.value = "";
   expenseAmount.value = "";
-  render();
+  renderExpenses();
 };
 
-// ---------------- DARK MODE ----------------
-darkToggle.checked = localStorage.getItem("dark") === "true";
-document.body.classList.toggle("dark", darkToggle.checked);
-
-darkToggle.onchange = () => {
-  document.body.classList.toggle("dark");
-  localStorage.setItem("dark", darkToggle.checked);
-};
-
-// ---------------- PRO SYSTEM ----------------
-function applyPro() {
-  if (isPro) {
-    businessSection.classList.remove("hidden");
-    lockText.classList.add("hidden");
-    openUpgrade.style.display = "none";
-  } else {
-    businessSection.classList.add("hidden");
-    lockText.classList.remove("hidden");
-  }
+// Remove expense
+function removeExpense(index) {
+  expenses.splice(index, 1);
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+  renderExpenses();
 }
 
-openUpgrade.onclick = () => {
-  upgradeModal.classList.remove("hidden");
-};
+// ===== MODAL FIX =====
 
-closeModal.onclick = () => {
+// Cancel button
+closeModal.onclick = (e) => {
+  e.stopPropagation();
   upgradeModal.classList.add("hidden");
 };
 
+// Click outside modal
+upgradeModal.onclick = () => {
+  upgradeModal.classList.add("hidden");
+};
+
+// Prevent card clicks
+modalCard.onclick = (e) => {
+  e.stopPropagation();
+};
+
+// Unlock PRO (demo)
 upgradeBtn.onclick = () => {
-  // DEMO UNLOCK (replace with Paystack later)
+  localStorage.setItem("isPro", "true");
   isPro = true;
-  localStorage.setItem("biggyPro", "true");
   upgradeModal.classList.add("hidden");
-  applyPro();
-  alert("🎉 Biggy PRO Unlocked!");
+  alert("🎉 Biggy PRO unlocked!");
 };
 
-// Init
-applyPro();
-render();
+renderExpenses();
