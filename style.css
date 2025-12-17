@@ -153,3 +153,13 @@ input:checked + .slider:before {
 .business-summary {
   margin-top: 10px;
 }
+.lock-msg {
+  color: #e53935;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.switch input:disabled + .slider {
+  background: #999;
+  cursor: not-allowed;
+}
