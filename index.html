@@ -21,6 +21,25 @@
 </head>
 
 <body>
+<section class="card">
+  <label class="switch">
+    <input type="checkbox" id="businessToggle">
+    <span class="slider"></span>
+  </label>
+  <span class="mode-text">Business Mode</span>
+</section>
+
+<section id="businessSection" class="card hidden">
+  <h3>Business Income</h3>
+  <input id="incomeTitle" type="text" placeholder="Income source">
+  <input id="incomeAmount" type="number" placeholder="Amount (₦)">
+  <button id="addIncomeBtn">Add Income</button>
+
+  <div class="business-summary">
+    <p>Total Income: <b id="totalIncome">₦0</b></p>
+    <p>Profit / Loss: <b id="profit">₦0</b></p>
+  </div>
+</section>
   <div class="app">
 
     <header>
