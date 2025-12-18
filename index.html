@@ -5,17 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Biggy Expense</title>
 
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      background: #121212;
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
       color: #fff;
     }
 
     header {
+      padding: 16px;
       text-align: center;
-      padding: 15px;
       font-size: 22px;
       font-weight: bold;
     }
@@ -26,9 +29,9 @@
 
     input, button {
       width: 100%;
-      padding: 12px;
-      margin-bottom: 10px;
-      border-radius: 6px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border-radius: 8px;
       border: none;
       font-size: 16px;
     }
@@ -36,57 +39,42 @@
     button {
       background: #1976d2;
       color: #fff;
+      font-weight: bold;
+    }
+
+    .expense {
+      background: #1e1e1e;
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .delete {
+      color: red;
+      font-size: 20px;
       cursor: pointer;
     }
 
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    li {
-      background: #1e1e1e;
-      padding: 10px;
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-      border-radius: 6px;
-    }
-
-    /* ===== MODAL ===== */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .modal-content {
-      background: #222;
-      padding: 20px;
+    .chart-box {
+      margin-top: 24px;
+      background: #1a1a1a;
+      padding: 16px;
       border-radius: 12px;
-      width: 85%;
-      max-width: 350px;
+    }
+
+    .lock {
+      margin-top: 20px;
+      background: #222;
+      padding: 16px;
+      border-radius: 12px;
       text-align: center;
     }
 
-    .modal-content h2 {
-      margin-bottom: 10px;
-    }
-
-    .modal-content p {
-      margin: 6px 0;
-    }
-
-    .cancel {
-      background: #444;
+    .lock button {
+      background: #2e7d32;
     }
   </style>
 </head>
@@ -96,28 +84,26 @@
 <header>💰 Biggy Expense</header>
 
 <div class="container">
-  <input id="expenseName" placeholder="Expense name">
-  <input id="expenseAmount" type="number" placeholder="Amount">
-  <button id="addExpense">Add Expense</button>
+  <input id="name" placeholder="Expense name">
+  <input id="amount" type="number" placeholder="Amount">
+  <button onclick="addExpense()">Add Expense</button>
 
-  <ul id="expenseList"></ul>
-</div>
+  <div id="list"></div>
 
-<!-- ===== PRO MODAL ===== -->
-<div id="upgradeModal" class="modal hidden">
-  <div class="modal-content" id="modalCard">
-    <h2>🚀 Biggy PRO</h2>
-    <p>✔ Unlimited expenses</p>
-    <p>✔ Business analytics</p>
-    <p>✔ Cloud sync (soon)</p>
+  <!-- BUSINESS MODE -->
+  <div id="businessSection" class="chart-box" style="display:none">
+    <h3>📊 Expense Analytics</h3>
+    <canvas id="pieChart"></canvas>
+  </div>
 
-    <h3>₦2,000 / lifetime</h3>
-
-    <button id="upgradeBtn">Unlock Now</button>
-    <button id="closeModal" class="cancel" type="button">Cancel</button>
+  <!-- LOCK -->
+  <div id="lockSection" class="lock">
+    <h3>🚀 Biggy PRO</h3>
+    <p>Unlock Business Analytics</p>
+    <button onclick="unlockPro()">Unlock Now</button>
   </div>
 </div>
 
-<script src="script.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
