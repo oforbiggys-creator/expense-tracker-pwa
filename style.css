@@ -1,165 +1,78 @@
-:root {
-  --bg: #f4f4f4;
-  --card: #ffffff;
-  --text: #000000;
-  --primary: #4CAF50;
-  --danger: #e53935;
+let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+let isPro = localStorage.getItem("biggyPro") === "true";
+let chart;
+
+function save() {
+  localStorage.setItem("expenses", JSON.stringify(expenses));
 }
 
-body.dark {
-  --bg: #121212;
-  --card: #1e1e1e;
-  --text: #ffffff;
+function addExpense() {
+  const name = document.getElementById("name").value.trim();
+  const amount = Number(document.getElementById("amount").value);
+
+  if (!name || amount <= 0) return alert("Enter valid data");
+
+  expenses.push({ name, amount });
+  save();
+  render();
+  document.getElementById("name").value = "";
+  document.getElementById("amount").value = "";
 }
 
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+function deleteExpense(index) {
+  expenses.splice(index, 1);
+  save();
+  render();
 }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
+function render() {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  expenses.forEach((e, i) => {
+    list.innerHTML += `
+      <div class="expense">
+        ${e.name} - ₦${e.amount}
+        <span class="delete" onclick="deleteExpense(${i})">✖</span>
+      </div>
+    `;
+  });
+
+  if (isPro) drawChart();
 }
 
-.app {
-  max-width: 480px;
-  margin: auto;
-  padding: 16px;
+function unlockPro() {
+  isPro = true;
+  localStorage.setItem("biggyPro", "true");
+  document.getElementById("lockSection").style.display = "none";
+  document.getElementById("businessSection").style.display = "block";
+  drawChart();
 }
 
-header {
-  text-align: center;
-  position: relative;
+function drawChart() {
+  const ctx = document.getElementById("pieChart");
+
+  const data = {};
+  expenses.forEach(e => {
+    data[e.name] = (data[e.name] || 0) + e.amount;
+  });
+
+  if (chart) chart.destroy();
+
+  chart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: Object.keys(data),
+      datasets: [{
+        data: Object.values(data)
+      }]
+    }
+  });
 }
 
-#themeToggle {
-  position: absolute;
-  right: 0;
-  top: 0;
-  border: none;
-  background: none;
-  font-size: 22px;
-  cursor: pointer;
+if (isPro) {
+  document.getElementById("lockSection").style.display = "none";
+  document.getElementById("businessSection").style.display = "block";
 }
 
-.card {
-  background: var(--card);
-  padding: 15px;
-  border-radius: 10px;
-  margin: 15px 0;
-}
-
-input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-button {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 6px;
-  background: var(--primary);
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.total {
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-li {
-  background: var(--card);
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-li button {
-  background: var(--danger);
-  width: auto;
-  padding: 6px 12px;
-}
-
-footer {
-  text-align: center;
-  margin-top: 20px;
-  opacity: 0.7;
-}
-.hidden {
-  display: none;
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 26px;
-}
-
-.switch input {
-  opacity: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  background: #ccc;
-  border-radius: 34px;
-  top: 0; left: 0; right: 0; bottom: 0;
-}
-
-.slider:before {
-  content: "";
-  position: absolute;
-  height: 20px;
-  width: 20px;
-  left: 3px;
-  bottom: 3px;
-  background: white;
-  border-radius: 50%;
-  transition: 0.3s;
-}
-
-input:checked + .slider {
-  background: #4CAF50;
-}
-
-input:checked + .slider:before {
-  transform: translateX(24px);
-}
-
-.mode-text {
-  margin-left: 10px;
-  font-weight: bold;
-}
-
-.business-summary {
-  margin-top: 10px;
-}
-.lock-msg {
-  color: #e53935;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.switch input:disabled + .slider {
-  background: #999;
-  cursor: not-allowed;
-}
+render();
