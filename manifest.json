@@ -1,12 +1,11 @@
 {
-  "name": "Biggy Expense Tracker",
-  "short_name": "Biggy",
-  "description": "Track expenses smartly with Biggy",
+  "name": "Spendio",
+  "short_name": "Spendio",
+  "description": "Spendio is a smart expense tracker with powerful analytics.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
-  "theme_color": "#0f172a",
-  "orientation": "portrait",
+  "theme_color": "#2563eb",
   "icons": [
     {
       "src": "icons/icon-192.png",
