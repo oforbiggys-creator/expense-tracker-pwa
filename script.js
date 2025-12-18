@@ -13,19 +13,32 @@ let isPro = localStorage.getItem("isPro") === "true";
 
 const FREE_LIMIT = 5;
 
-// Render expenses
+/* ================= SAFE RENDER ================= */
 function renderExpenses() {
   expenseList.innerHTML = "";
+
   expenses.forEach((e, i) => {
+    // SAFETY CHECK (prevents undefined)
+    if (!e || !e.name || !e.amount) return;
+
     const li = document.createElement("li");
-    li.innerHTML = `${e.name} - ₦${e.amount} <span style="color:red;cursor:pointer" onclick="removeExpense(${i})">✖</span>`;
+    li.innerHTML = `
+      <span>${e.name} - ₦${Number(e.amount).toLocaleString()}</span>
+      <span style="color:red;cursor:pointer" onclick="removeExpense(${i})">✖</span>
+    `;
     expenseList.appendChild(li);
   });
 }
 
-// Add expense
+/* ================= ADD EXPENSE ================= */
 addExpenseBtn.onclick = () => {
-  if (!expenseName.value || !expenseAmount.value) return;
+  const name = expenseName.value.trim();
+  const amount = expenseAmount.value.trim();
+
+  if (!name || !amount || Number(amount) <= 0) {
+    alert("Please enter valid expense details");
+    return;
+  }
 
   if (!isPro && expenses.length >= FREE_LIMIT) {
     upgradeModal.classList.remove("hidden");
@@ -33,8 +46,8 @@ addExpenseBtn.onclick = () => {
   }
 
   expenses.push({
-    name: expenseName.value,
-    amount: expenseAmount.value
+    name,
+    amount: Number(amount)
   });
 
   localStorage.setItem("expenses", JSON.stringify(expenses));
@@ -43,32 +56,27 @@ addExpenseBtn.onclick = () => {
   renderExpenses();
 };
 
-// Remove expense
+/* ================= REMOVE ================= */
 function removeExpense(index) {
   expenses.splice(index, 1);
   localStorage.setItem("expenses", JSON.stringify(expenses));
   renderExpenses();
 }
 
-// ===== MODAL FIX =====
-
-// Cancel button
+/* ================= MODAL ================= */
 closeModal.onclick = (e) => {
   e.stopPropagation();
   upgradeModal.classList.add("hidden");
 };
 
-// Click outside modal
 upgradeModal.onclick = () => {
   upgradeModal.classList.add("hidden");
 };
 
-// Prevent card clicks
 modalCard.onclick = (e) => {
   e.stopPropagation();
 };
 
-// Unlock PRO (demo)
 upgradeBtn.onclick = () => {
   localStorage.setItem("isPro", "true");
   isPro = true;
