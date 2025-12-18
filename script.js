@@ -1,87 +1,78 @@
-const expenseName = document.getElementById("expenseName");
-const expenseAmount = document.getElementById("expenseAmount");
-const addExpenseBtn = document.getElementById("addExpense");
-const expenseList = document.getElementById("expenseList");
-
-const upgradeModal = document.getElementById("upgradeModal");
-const closeModal = document.getElementById("closeModal");
-const upgradeBtn = document.getElementById("upgradeBtn");
-const modalCard = document.getElementById("modalCard");
-
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-let isPro = localStorage.getItem("isPro") === "true";
+let isPro = localStorage.getItem("biggyPro") === "true";
+let chart;
 
-const FREE_LIMIT = 5;
+function save() {
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+}
 
-/* ================= SAFE RENDER ================= */
-function renderExpenses() {
-  expenseList.innerHTML = "";
+function addExpense() {
+  const name = document.getElementById("name").value.trim();
+  const amount = Number(document.getElementById("amount").value);
+
+  if (!name || amount <= 0) return alert("Enter valid data");
+
+  expenses.push({ name, amount });
+  save();
+  render();
+  document.getElementById("name").value = "";
+  document.getElementById("amount").value = "";
+}
+
+function deleteExpense(index) {
+  expenses.splice(index, 1);
+  save();
+  render();
+}
+
+function render() {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
 
   expenses.forEach((e, i) => {
-    // SAFETY CHECK (prevents undefined)
-    if (!e || !e.name || !e.amount) return;
-
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <span>${e.name} - ₦${Number(e.amount).toLocaleString()}</span>
-      <span style="color:red;cursor:pointer" onclick="removeExpense(${i})">✖</span>
+    list.innerHTML += `
+      <div class="expense">
+        ${e.name} - ₦${e.amount}
+        <span class="delete" onclick="deleteExpense(${i})">✖</span>
+      </div>
     `;
-    expenseList.appendChild(li);
-  });
-}
-
-/* ================= ADD EXPENSE ================= */
-addExpenseBtn.onclick = () => {
-  const name = expenseName.value.trim();
-  const amount = expenseAmount.value.trim();
-
-  if (!name || !amount || Number(amount) <= 0) {
-    alert("Please enter valid expense details");
-    return;
-  }
-
-  if (!isPro && expenses.length >= FREE_LIMIT) {
-    upgradeModal.classList.remove("hidden");
-    return;
-  }
-
-  expenses.push({
-    name,
-    amount: Number(amount)
   });
 
-  localStorage.setItem("expenses", JSON.stringify(expenses));
-  expenseName.value = "";
-  expenseAmount.value = "";
-  renderExpenses();
-};
-
-/* ================= REMOVE ================= */
-function removeExpense(index) {
-  expenses.splice(index, 1);
-  localStorage.setItem("expenses", JSON.stringify(expenses));
-  renderExpenses();
+  if (isPro) drawChart();
 }
 
-/* ================= MODAL ================= */
-closeModal.onclick = (e) => {
-  e.stopPropagation();
-  upgradeModal.classList.add("hidden");
-};
-
-upgradeModal.onclick = () => {
-  upgradeModal.classList.add("hidden");
-};
-
-modalCard.onclick = (e) => {
-  e.stopPropagation();
-};
-
-upgradeBtn.onclick = () => {
-  localStorage.setItem("isPro", "true");
+function unlockPro() {
   isPro = true;
-  upgradeModal.classList.add("hidden");
-  alert("🎉 Biggy PRO unlocked!");
-};
+  localStorage.setItem("biggyPro", "true");
+  document.getElementById("lockSection").style.display = "none";
+  document.getElementById("businessSection").style.display = "block";
+  drawChart();
+}
 
-renderExpenses();
+function drawChart() {
+  const ctx = document.getElementById("pieChart");
+
+  const data = {};
+  expenses.forEach(e => {
+    data[e.name] = (data[e.name] || 0) + e.amount;
+  });
+
+  if (chart) chart.destroy();
+
+  chart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: Object.keys(data),
+      datasets: [{
+        data: Object.values(data)
+      }]
+    }
+  });
+}
+
+if (isPro) {
+  document.getElementById("lockSection").style.display = "none";
+  document.getElementById("businessSection").style.display = "block";
+}
+
+render();
