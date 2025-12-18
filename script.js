@@ -1,91 +1,74 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const nameInput = document.getElementById("name");
-  const amountInput = document.getElementById("amount");
-  const addBtn = document.getElementById("addExpense");
-  const list = document.getElementById("list");
-  const unlockBtn = document.getElementById("unlockPro");
+// Elements
+const titleInput = document.getElementById("title");
+const amountInput = document.getElementById("amount");
+const addBtn = document.getElementById("addBtn");
+const list = document.getElementById("list");
+const totalEl = document.getElementById("total");
 
-  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+const proCard = document.getElementById("proCard");
+const proFeatures = document.getElementById("proFeatures");
+const unlockPro = document.getElementById("unlockPro");
 
-  /* ------------------------
-     RENDER EXPENSES
-  ------------------------ */
-  function renderExpenses() {
-    list.innerHTML = "";
+const themeToggle = document.getElementById("themeToggle");
 
-    expenses.forEach((exp, index) => {
-      const div = document.createElement("div");
-      div.className = "expense";
+// State
+let expenses = JSON.parse(localStorage.getItem("spendio_expenses")) || [];
+let isPro = localStorage.getItem("spendio_pro") === "true";
 
-      div.innerHTML = `
-        <span>${exp.name} - ₦${exp.amount}</span>
-        <span class="delete" data-index="${index}">✖</span>
-      `;
+// Render
+function render() {
+  list.innerHTML = "";
+  let total = 0;
 
-      list.appendChild(div);
-    });
-
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-  }
-
-  renderExpenses();
-
-  /* ------------------------
-     ADD EXPENSE (FIXED)
-  ------------------------ */
-  addBtn.addEventListener("click", () => {
-    const name = nameInput.value.trim();
-    const amount = amountInput.value.trim();
-
-    if (!name || !amount || isNaN(amount)) {
-      alert("Please enter a valid expense name and amount");
-      return;
-    }
-
-    expenses.push({
-      name,
-      amount: Number(amount),
-    });
-
-    nameInput.value = "";
-    amountInput.value = "";
-
-    renderExpenses();
+  expenses.forEach(e => {
+    total += Number(e.amount);
+    const li = document.createElement("li");
+    li.textContent = `${e.title} - ₦${e.amount}`;
+    list.appendChild(li);
   });
 
-  /* ------------------------
-     DELETE EXPENSE
-  ------------------------ */
-  list.addEventListener("click", (e) => {
-    if (e.target.classList.contains("delete")) {
-      const index = e.target.dataset.index;
-      expenses.splice(index, 1);
-      renderExpenses();
-    }
-  });
+  totalEl.textContent = `₦${total}`;
 
-  /* ------------------------
-     BIGGY PRO BUTTON (FIXED)
-  ------------------------ */
-  if (unlockBtn) {
-    unlockBtn.addEventListener("click", () => {
-      alert(
-        "🚀 Biggy PRO coming soon!\n\n• Business analytics\n• Charts\n• Cloud sync"
-      );
-    });
+  if (isPro) {
+    proCard.style.display = "none";
+    proFeatures.style.display = "block";
   }
-});
-// THEME LOGIC
-const toggle = document.getElementById("themeToggle");
-
-if (localStorage.getItem("theme") === "light") {
-  document.body.classList.add("light");
 }
 
-toggle?.addEventListener("click", () => {
+render();
+
+// Add expense
+addBtn.onclick = () => {
+  if (!titleInput.value || !amountInput.value) return;
+
+  expenses.push({
+    title: titleInput.value,
+    amount: amountInput.value
+  });
+
+  localStorage.setItem("spendio_expenses", JSON.stringify(expenses));
+  titleInput.value = "";
+  amountInput.value = "";
+  render();
+};
+
+// PRO Unlock (Flutterwave placeholder)
+unlockPro.onclick = () => {
+  alert("Replace with Flutterwave payment to unlock Spendio PRO");
+  localStorage.setItem("spendio_pro", "true");
+  location.reload();
+};
+
+// Dark mode
+themeToggle.onclick = () => {
   document.body.classList.toggle("light");
   localStorage.setItem(
-    "theme",
+    "spendio_theme",
     document.body.classList.contains("light") ? "light" : "dark"
   );
-});
+};
+
+// Restore theme
+if (localStorage.getItem("spendio_theme") === "light") {
+  document.body.classList.add("light");
+}
