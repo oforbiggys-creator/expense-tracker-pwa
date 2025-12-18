@@ -1,142 +1,84 @@
-/* ======================
-   ROOT COLORS
-====================== */
 :root {
-  --bg: #0b0f14;
-  --card: #151a21;
-  --input: #1e2430;
+  --bg: #0f172a;
+  --card: #1e293b;
   --text: #ffffff;
-  --muted: #9aa4b2;
-  --primary: #1e88e5;
-  --danger: #ff4d4d;
-  --success: #2ecc71;
+  --primary: #2563eb;
 }
 
-/* Light mode */
-.light {
-  --bg: #f5f7fa;
+body.light {
+  --bg: #f8fafc;
   --card: #ffffff;
-  --input: #eef1f5;
-  --text: #111;
-  --muted: #666;
+  --text: #020617;
 }
 
-/* ======================
-   GLOBAL
-====================== */
 * {
   box-sizing: border-box;
+  font-family: system-ui;
 }
 
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.app {
-  max-width: 480px;
-  margin: auto;
+header {
   padding: 16px;
-}
-
-/* ======================
-   HEADER
-====================== */
-.header {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.header h1 {
-  font-size: 28px;
-  font-weight: 800;
-}
-
-/* ======================
-   CARDS
-====================== */
-.card {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.4);
-}
-
-/* ======================
-   INPUTS
-====================== */
-input {
-  width: 100%;
-  padding: 14px;
-  margin-bottom: 12px;
-  border-radius: 12px;
-  border: none;
-  background: var(--input);
-  color: var(--text);
-  font-size: 16px;
-}
-
-input::placeholder {
-  color: var(--muted);
-}
-
-/* ======================
-   BUTTONS
-====================== */
-button {
-  width: 100%;
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-  font-size: 16px;
-  font-weight: 700;
   background: var(--primary);
-  color: #fff;
-  cursor: pointer;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-/* ======================
-   EXPENSE LIST
-====================== */
-#list {
-  margin-top: 10px;
-}
-
-.expense {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--input);
-  padding: 12px;
-  border-radius: 12px;
+}
+
+.container {
+  padding: 16px;
+}
+
+.card {
+  background: var(--card);
+  padding: 16px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+}
+
+input, button {
+  width: 100%;
+  padding: 14px;
   margin-bottom: 10px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
 }
 
-.expense span {
-  font-weight: 600;
+input {
+  background: transparent;
+  border: 1px solid #334155;
+  color: var(--text);
 }
 
-.remove {
-  color: var(--danger);
-  font-size: 20px;
-  cursor: pointer;
+button {
+  background: var(--primary);
+  color: white;
+  font-weight: bold;
 }
 
-/* ======================
-   PRO CARD
-====================== */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: #334155;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+
 .pro {
-  border: 2px solid var(--primary);
+  background: linear-gradient(135deg, #2563eb, #1e40af);
   text-align: center;
 }
 
-.pro button {
-  background: var(--success);
+#proFeatures {
+  display: none;
 }
