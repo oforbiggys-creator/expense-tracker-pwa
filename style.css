@@ -1,218 +1,142 @@
-/* =========================
-   GLOBAL RESET
-========================= */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-/* =========================
+/* ======================
    ROOT COLORS
-========================= */
+====================== */
 :root {
-  --bg: #0f1115;
-  --card: #1b1e26;
-  --input: #242833;
+  --bg: #0b0f14;
+  --card: #151a21;
+  --input: #1e2430;
   --text: #ffffff;
-  --muted: #9aa0aa;
+  --muted: #9aa4b2;
   --primary: #1e88e5;
-  --success: #2e7d32;
-  --danger: #e53935;
-  --border: #2c3140;
+  --danger: #ff4d4d;
+  --success: #2ecc71;
 }
 
-/* =========================
-   BODY
-========================= */
+/* Light mode */
+.light {
+  --bg: #f5f7fa;
+  --card: #ffffff;
+  --input: #eef1f5;
+  --text: #111;
+  --muted: #666;
+}
+
+/* ======================
+   GLOBAL
+====================== */
+* {
+  box-sizing: border-box;
+}
+
 body {
-  background: linear-gradient(180deg, #0f1115, #0b0d12);
+  margin: 0;
+  background: var(--bg);
   color: var(--text);
-  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* =========================
-   HEADER
-========================= */
-header {
-  padding: 18px;
-  text-align: center;
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  background: rgba(0, 0, 0, 0.3);
-  border-bottom: 1px solid var(--border);
-}
-
-/* =========================
-   CONTAINER
-========================= */
-.container {
-  padding: 18px;
-  max-width: 520px;
+.app {
+  max-width: 480px;
   margin: auto;
+  padding: 16px;
 }
 
-/* =========================
+/* ======================
+   HEADER
+====================== */
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+/* ======================
+   CARDS
+====================== */
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+}
+
+/* ======================
    INPUTS
-========================= */
+====================== */
 input {
   width: 100%;
-  padding: 15px;
-  margin-bottom: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
   border-radius: 12px;
-  border: 1px solid var(--border);
+  border: none;
   background: var(--input);
   color: var(--text);
   font-size: 16px;
-  outline: none;
-  transition: 0.2s ease;
 }
 
 input::placeholder {
   color: var(--muted);
 }
 
-input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.25);
-}
-
-/* =========================
+/* ======================
    BUTTONS
-========================= */
+====================== */
 button {
   width: 100%;
-  padding: 15px;
+  padding: 14px;
   border-radius: 14px;
   border: none;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
+  background: var(--primary);
+  color: #fff;
   cursor: pointer;
-  transition: 0.25s ease;
-}
-
-button:hover {
-  transform: translateY(-1px);
 }
 
 button:active {
   transform: scale(0.98);
 }
 
-/* Primary Button */
-button {
-  background: linear-gradient(135deg, #1e88e5, #1565c0);
-  color: white;
-  box-shadow: 0 6px 18px rgba(30, 136, 229, 0.35);
-}
-
-/* =========================
+/* ======================
    EXPENSE LIST
-========================= */
+====================== */
 #list {
-  margin-top: 18px;
+  margin-top: 10px;
 }
 
 .expense {
-  background: linear-gradient(145deg, #1c202b, #171a22);
-  border: 1px solid var(--border);
-  padding: 14px 16px;
-  border-radius: 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: var(--input);
+  padding: 12px;
+  border-radius: 12px;
   margin-bottom: 10px;
-  animation: fadeIn 0.25s ease;
 }
 
 .expense span {
-  font-size: 16px;
+  font-weight: 600;
 }
 
-/* Delete Button */
-.delete {
+.remove {
   color: var(--danger);
   font-size: 20px;
   cursor: pointer;
-  padding-left: 10px;
-  transition: 0.2s ease;
 }
 
-.delete:hover {
-  transform: scale(1.15);
-}
-
-/* =========================
-   CHART BOX
-========================= */
-.chart-box {
-  margin-top: 26px;
-  background: linear-gradient(145deg, #1b1f29, #151822);
-  border-radius: 18px;
-  padding: 18px;
-  border: 1px solid var(--border);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-}
-
-.chart-box h3 {
-  margin-bottom: 12px;
-  font-size: 18px;
+/* ======================
+   PRO CARD
+====================== */
+.pro {
+  border: 2px solid var(--primary);
   text-align: center;
 }
 
-/* =========================
-   BUSINESS / PRO LOCK
-========================= */
-.lock {
-  margin-top: 28px;
-  padding: 22px;
-  border-radius: 18px;
-  background: linear-gradient(145deg, #222736, #1a1e2a);
-  border: 1px solid var(--border);
-  text-align: center;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
-}
-
-.lock h3 {
-  font-size: 20px;
-  margin-bottom: 6px;
-}
-
-.lock p {
-  font-size: 14px;
-  color: var(--muted);
-  margin-bottom: 16px;
-}
-
-.lock button {
-  background: linear-gradient(135deg, #2e7d32, #1b5e20);
-  box-shadow: 0 6px 20px rgba(46, 125, 50, 0.45);
-}
-
-/* =========================
-   ANIMATIONS
-========================= */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* =========================
-   SCROLLBAR (ANDROID SAFE)
-========================= */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #2c3140;
-  border-radius: 10px;
+.pro button {
+  background: var(--success);
 }
