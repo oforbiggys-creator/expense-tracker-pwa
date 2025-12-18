@@ -1,78 +1,218 @@
-let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-let isPro = localStorage.getItem("biggyPro") === "true";
-let chart;
-
-function save() {
-  localStorage.setItem("expenses", JSON.stringify(expenses));
+/* =========================
+   GLOBAL RESET
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-function addExpense() {
-  const name = document.getElementById("name").value.trim();
-  const amount = Number(document.getElementById("amount").value);
-
-  if (!name || amount <= 0) return alert("Enter valid data");
-
-  expenses.push({ name, amount });
-  save();
-  render();
-  document.getElementById("name").value = "";
-  document.getElementById("amount").value = "";
+/* =========================
+   ROOT COLORS
+========================= */
+:root {
+  --bg: #0f1115;
+  --card: #1b1e26;
+  --input: #242833;
+  --text: #ffffff;
+  --muted: #9aa0aa;
+  --primary: #1e88e5;
+  --success: #2e7d32;
+  --danger: #e53935;
+  --border: #2c3140;
 }
 
-function deleteExpense(index) {
-  expenses.splice(index, 1);
-  save();
-  render();
+/* =========================
+   BODY
+========================= */
+body {
+  background: linear-gradient(180deg, #0f1115, #0b0d12);
+  color: var(--text);
+  min-height: 100vh;
 }
 
-function render() {
-  const list = document.getElementById("list");
-  list.innerHTML = "";
-
-  expenses.forEach((e, i) => {
-    list.innerHTML += `
-      <div class="expense">
-        ${e.name} - ₦${e.amount}
-        <span class="delete" onclick="deleteExpense(${i})">✖</span>
-      </div>
-    `;
-  });
-
-  if (isPro) drawChart();
+/* =========================
+   HEADER
+========================= */
+header {
+  padding: 18px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--border);
 }
 
-function unlockPro() {
-  isPro = true;
-  localStorage.setItem("biggyPro", "true");
-  document.getElementById("lockSection").style.display = "none";
-  document.getElementById("businessSection").style.display = "block";
-  drawChart();
+/* =========================
+   CONTAINER
+========================= */
+.container {
+  padding: 18px;
+  max-width: 520px;
+  margin: auto;
 }
 
-function drawChart() {
-  const ctx = document.getElementById("pieChart");
-
-  const data = {};
-  expenses.forEach(e => {
-    data[e.name] = (data[e.name] || 0) + e.amount;
-  });
-
-  if (chart) chart.destroy();
-
-  chart = new Chart(ctx, {
-    type: "pie",
-    data: {
-      labels: Object.keys(data),
-      datasets: [{
-        data: Object.values(data)
-      }]
-    }
-  });
+/* =========================
+   INPUTS
+========================= */
+input {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--input);
+  color: var(--text);
+  font-size: 16px;
+  outline: none;
+  transition: 0.2s ease;
 }
 
-if (isPro) {
-  document.getElementById("lockSection").style.display = "none";
-  document.getElementById("businessSection").style.display = "block";
+input::placeholder {
+  color: var(--muted);
 }
 
-render();
+input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.25);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+button {
+  width: 100%;
+  padding: 15px;
+  border-radius: 14px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Primary Button */
+button {
+  background: linear-gradient(135deg, #1e88e5, #1565c0);
+  color: white;
+  box-shadow: 0 6px 18px rgba(30, 136, 229, 0.35);
+}
+
+/* =========================
+   EXPENSE LIST
+========================= */
+#list {
+  margin-top: 18px;
+}
+
+.expense {
+  background: linear-gradient(145deg, #1c202b, #171a22);
+  border: 1px solid var(--border);
+  padding: 14px 16px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  animation: fadeIn 0.25s ease;
+}
+
+.expense span {
+  font-size: 16px;
+}
+
+/* Delete Button */
+.delete {
+  color: var(--danger);
+  font-size: 20px;
+  cursor: pointer;
+  padding-left: 10px;
+  transition: 0.2s ease;
+}
+
+.delete:hover {
+  transform: scale(1.15);
+}
+
+/* =========================
+   CHART BOX
+========================= */
+.chart-box {
+  margin-top: 26px;
+  background: linear-gradient(145deg, #1b1f29, #151822);
+  border-radius: 18px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.chart-box h3 {
+  margin-bottom: 12px;
+  font-size: 18px;
+  text-align: center;
+}
+
+/* =========================
+   BUSINESS / PRO LOCK
+========================= */
+.lock {
+  margin-top: 28px;
+  padding: 22px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #222736, #1a1e2a);
+  border: 1px solid var(--border);
+  text-align: center;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+}
+
+.lock h3 {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.lock p {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.lock button {
+  background: linear-gradient(135deg, #2e7d32, #1b5e20);
+  box-shadow: 0 6px 20px rgba(46, 125, 50, 0.45);
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   SCROLLBAR (ANDROID SAFE)
+========================= */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2c3140;
+  border-radius: 10px;
+}
