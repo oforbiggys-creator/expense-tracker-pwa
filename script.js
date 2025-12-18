@@ -1,78 +1,77 @@
-let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-let isPro = localStorage.getItem("biggyPro") === "true";
-let chart;
-
-function save() {
-  localStorage.setItem("expenses", JSON.stringify(expenses));
-}
-
-function addExpense() {
-  const name = document.getElementById("name").value.trim();
-  const amount = Number(document.getElementById("amount").value);
-
-  if (!name || amount <= 0) return alert("Enter valid data");
-
-  expenses.push({ name, amount });
-  save();
-  render();
-  document.getElementById("name").value = "";
-  document.getElementById("amount").value = "";
-}
-
-function deleteExpense(index) {
-  expenses.splice(index, 1);
-  save();
-  render();
-}
-
-function render() {
+document.addEventListener("DOMContentLoaded", () => {
+  const nameInput = document.getElementById("name");
+  const amountInput = document.getElementById("amount");
+  const addBtn = document.getElementById("addExpense");
   const list = document.getElementById("list");
-  list.innerHTML = "";
+  const unlockBtn = document.getElementById("unlockPro");
 
-  expenses.forEach((e, i) => {
-    list.innerHTML += `
-      <div class="expense">
-        ${e.name} - ₦${e.amount}
-        <span class="delete" onclick="deleteExpense(${i})">✖</span>
-      </div>
-    `;
+  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+  /* ------------------------
+     RENDER EXPENSES
+  ------------------------ */
+  function renderExpenses() {
+    list.innerHTML = "";
+
+    expenses.forEach((exp, index) => {
+      const div = document.createElement("div");
+      div.className = "expense";
+
+      div.innerHTML = `
+        <span>${exp.name} - ₦${exp.amount}</span>
+        <span class="delete" data-index="${index}">✖</span>
+      `;
+
+      list.appendChild(div);
+    });
+
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+  }
+
+  renderExpenses();
+
+  /* ------------------------
+     ADD EXPENSE (FIXED)
+  ------------------------ */
+  addBtn.addEventListener("click", () => {
+    const name = nameInput.value.trim();
+    const amount = amountInput.value.trim();
+
+    if (!name || !amount || isNaN(amount)) {
+      alert("Please enter a valid expense name and amount");
+      return;
+    }
+
+    expenses.push({
+      name,
+      amount: Number(amount),
+    });
+
+    nameInput.value = "";
+    amountInput.value = "";
+
+    renderExpenses();
   });
 
-  if (isPro) drawChart();
-}
-
-function unlockPro() {
-  isPro = true;
-  localStorage.setItem("biggyPro", "true");
-  document.getElementById("lockSection").style.display = "none";
-  document.getElementById("businessSection").style.display = "block";
-  drawChart();
-}
-
-function drawChart() {
-  const ctx = document.getElementById("pieChart");
-
-  const data = {};
-  expenses.forEach(e => {
-    data[e.name] = (data[e.name] || 0) + e.amount;
-  });
-
-  if (chart) chart.destroy();
-
-  chart = new Chart(ctx, {
-    type: "pie",
-    data: {
-      labels: Object.keys(data),
-      datasets: [{
-        data: Object.values(data)
-      }]
+  /* ------------------------
+     DELETE EXPENSE
+  ------------------------ */
+  list.addEventListener("click", (e) => {
+    if (e.target.classList.contains("delete")) {
+      const index = e.target.dataset.index;
+      expenses.splice(index, 1);
+      renderExpenses();
     }
   });
-}
 
-if (isPro) {
-  document.getElementById("lockSection").style.display = "none";
-  document.getElementById("businessSection").style.display = "block";
-}
-
-render();
+  /* ------------------------
+     BIGGY PRO BUTTON (FIXED)
+  ------------------------ */
+  if (unlockBtn) {
+    unlockBtn.addEventListener("click", () => {
+      alert(
+        "🚀 Biggy PRO coming soon!\n\n• Business analytics\n• Charts\n• Cloud sync"
+      );
+    });
+  }
+});
